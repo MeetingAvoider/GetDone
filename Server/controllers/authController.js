@@ -13,7 +13,7 @@ exports.signup = async function (req, res) {
     });
   } catch (error) {
     res.status(400).json({
-      status: "failed",
+      status: "failedd",
       message: error.message,
     });
   }
@@ -68,3 +68,4 @@ exports.logout = function (req, res) {
     status: "successfully",
   });
 };
+exports.middleware = function (req, res, next) {};
