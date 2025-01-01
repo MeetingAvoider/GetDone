@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const router = require("./route/todoRoute");
 dotenv.config();
 mongoose
   .connect(process.env.MONGO_STR)
@@ -11,9 +12,8 @@ mongoose
     console.log(err.message);
   });
 const app = express();
-app.get("/", (req, res) => {
-  res.send("<h1>Hello world</h1>");
-});
+app.use(express.json());
+app.use("/todo", router);
 const port = process.env.PORT || 6000;
 app.listen(port, () => {
   console.log(`Server is running at port  ${port}`);
