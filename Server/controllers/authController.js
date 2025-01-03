@@ -13,7 +13,7 @@ exports.signup = async function (req, res) {
     });
   } catch (error) {
     res.status(400).json({
-      status: "failedd",
+      status: "failed",
       message: error.message,
     });
   }
