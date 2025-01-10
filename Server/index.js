@@ -2,7 +2,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const router = require("./route/todoRoute");
+const cors = require("cors");
 const { router: authRoutes } = require("./route/authRoute");
+const app = express();
 dotenv.config();
 mongoose
   .connect(process.env.MONGO_STR)
@@ -12,8 +14,17 @@ mongoose
   .catch((err) => {
     console.log(err.message);
   });
-const app = express();
+
+//middlewares
 app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+    methods: "GET,POST,DELETE,UPDATE",
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use("/todo", router);
 app.use("/auth", authRoutes);
 app.use("*", function (req, res) {
