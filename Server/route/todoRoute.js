@@ -8,6 +8,6 @@ const {
 const router = express.Router();
 router.post("/create", createTodo);
 router.get("/get", getTodos);
-router.patch("/update", updateTodo);
-router.delete("/delete", deleteTodo);
+router.patch("/update/:id", updateTodo);
+router.delete("/delete/:id", deleteTodo);
 module.exports = router;

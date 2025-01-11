@@ -1,4 +1,6 @@
+const mongoose = require("mongoose");
 const todo = require("../models/todoModel");
+
 const createTodo = async function (req, res) {
   console.log(req.body);
   try {
@@ -16,6 +18,7 @@ const createTodo = async function (req, res) {
     });
   }
 };
+
 const getTodos = async function (req, res) {
   try {
     const todos = await todo.find();
@@ -30,13 +33,32 @@ const getTodos = async function (req, res) {
     });
   }
 };
+
 const deleteTodo = async function (req, res) {
   try {
-    const deleteItemId = await todo.findOne(req.body.todo);
-    const deleted = await todo.findByIdAndDelete(deleteItemId.id);
-    req.status(200).json({
+    const { id } = req.params;
+
+    // Check if the ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Invalid ID",
+      });
+    }
+
+    const deletedTodo = await todo.findByIdAndDelete(id);
+
+    // Check if the todo exists
+    if (!deletedTodo) {
+      return res.status(404).json({
+        status: "Failed",
+        message: `No todo found with ID: ${id}`,
+      });
+    }
+
+    res.status(200).json({
       status: "success",
-      message: `${req.body.todo} deleted successfully:`,
+      message: `${id} deleted successfully`,
     });
   } catch (error) {
     res.status(400).json({
@@ -45,6 +67,7 @@ const deleteTodo = async function (req, res) {
     });
   }
 };
+
 const updateTodo = async function (req, res) {
   try {
     const updateItemId = await todo.findOne({ todo: req.body.todo });
@@ -75,4 +98,5 @@ const updateTodo = async function (req, res) {
     });
   }
 };
+
 module.exports = { createTodo, getTodos, deleteTodo, updateTodo };

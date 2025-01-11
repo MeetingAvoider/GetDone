@@ -34,7 +34,7 @@ function Home() {
     <div className="flex justify-center min-h-screen">
       <div className="w-96 flex flex-col items-center">
         <AddTodo setTodos={setTodos} todos={todos} />
-        <DisplayTodos todos={todos} />
+        <DisplayTodos todos={todos} setTodos={setTodos} />
       </div>
     </div>
   );
