@@ -70,25 +70,35 @@ const deleteTodo = async function (req, res) {
 
 const updateTodo = async function (req, res) {
   try {
-    const updateItemId = await todo.findOne({ todo: req.body.todo });
-    if (!updateItemId) {
-      res.status(400).json({
+    const { id } = req.params;
+    const { newTodo } = req.body;
+
+    // Check if the ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
         status: "Failed",
-        message: `There is no todo with this name ${req.body.todo}`,
+        message: "Invalid ID",
       });
-      return;
     }
-    const updated = await todo.findByIdAndUpdate(
-      updateItemId.id,
-      {
-        todo: req.body.newTodo,
-      },
+
+    const updatedTodo = await todo.findByIdAndUpdate(
+      id,
+      { todo: newTodo },
       { new: true }
     );
+
+    // Check if the todo exists
+    if (!updatedTodo) {
+      return res.status(404).json({
+        status: "Failed",
+        message: `No todo found with ID: ${id}`,
+      });
+    }
+
     res.status(200).json({
       status: "successfully",
       data: {
-        updated,
+        updatedTodo,
       },
     });
   } catch (error) {

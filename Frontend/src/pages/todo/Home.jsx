@@ -31,8 +31,8 @@ function Home() {
     return <h1>{error}</h1>;
   }
   return (
-    <div className="flex justify-center min-h-screen">
-      <div className="w-96 flex flex-col items-center">
+    <div className="flex justify-center min-h-screen bg-[#fcfeff]">
+      <div className="flex flex-col items-center w-[600px] bg-[#6aa7b8] h-[600px] my-4 rounded-3xl shadow-lg">
         <AddTodo setTodos={setTodos} todos={todos} />
         <DisplayTodos todos={todos} setTodos={setTodos} />
       </div>

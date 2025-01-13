@@ -49,13 +49,19 @@ exports.login = async function (req, res) {
       process.env.SECRET_KEYS,
       { expiresIn: process.env.EXPIRE_TIME }
     );
-    res.status(200).json({
-      status: "successfully",
-      data: {
-        userDetails,
-        token,
-      },
-    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      })
+      .json({
+        status: "successful",
+        data: {
+          userDetails,
+          token,
+        },
+      });
   } catch (error) {
     res.status(400).json({
       status: "failed",
@@ -68,4 +74,23 @@ exports.logout = function (req, res) {
     status: "successfully",
   });
 };
-exports.middleware = function (req, res, next) {};
+
+exports.middleware = async function (req, res, next) {
+  const token = req.cookie.token;
+  if (!token) {
+    return res.status(404).json({
+      status: "failed",
+      message: "un-authorize",
+    });
+  }
+  try {
+    const decode = jsonwebtoken.verify(token, process.env.SECRET_KEYS);
+    req.user = decode;
+    next();
+  } catch (error) {
+    res.status(404).json({
+      status: "failed",
+      message: error.message,
+    });
+  }
+};
